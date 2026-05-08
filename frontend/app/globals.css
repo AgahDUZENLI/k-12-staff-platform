@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 0 0% 97%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --primary: 220 70% 25%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 45%;
+    --border: 0 0% 88%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: "Georgia", serif;
+  }
+}
