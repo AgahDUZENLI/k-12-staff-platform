@@ -19,10 +19,16 @@ export interface Observation {
   id: string;
   teacher_id: string;
   observed_at: string;
+  observation_type: string;
+  framework: string;
+  course_name: string;
+  room: string;
   scores: Record<string, number>;
+  section_notes: Record<string, string>;
   raw_notes: string;
   ai_summary: string;
   flagged: boolean;
+  status: string;
   created_at: string;
 }
 
@@ -32,6 +38,7 @@ export interface Review {
   period: string;
   category_scores: Record<string, number>;
   final_notes: string;
+  teacher_response: string;
   status: string;
   ai_summary: string;
   created_at: string;
@@ -42,6 +49,7 @@ export interface Note {
   teacher_id: string;
   content: string;
   tag: string;
+  pinned: boolean;
   created_at: string;
 }
 
@@ -50,15 +58,28 @@ export interface Goal {
   teacher_id: string;
   title: string;
   description: string;
+  linked_dimension: string;
+  evidence_type: string;
   target_date: string;
   status: string;
   created_at: string;
+  milestones: Milestone[];
   updates: GoalUpdate[];
+}
+
+export interface Milestone {
+  id: string;
+  goal_id: string;
+  description: string;
+  due_date: string;
+  completed: boolean;
 }
 
 export interface GoalUpdate {
   id: string;
   goal_id: string;
+  author_id: string;
+  author_name: string;
   content: string;
   created_at: string;
 }
@@ -67,6 +88,7 @@ export interface DashboardData {
   observations_this_month: number;
   pending_reviews: number;
   open_goals: number;
+  at_risk_goals: number;
   flagged_staff: Teacher[];
   recent_observations: (Observation & { teacher_name: string })[];
 }
@@ -80,8 +102,6 @@ export const getStaffSummary = (id: string) => api.get<{ summary: string }>(`/st
 
 export const createObservation = (data: object) => api.post("/observations", data);
 export const createReview = (data: object) => api.post("/reviews", data);
-export const submitReview = (id: string) => api.patch(`/reviews/${id}/submit`);
-export const acknowledgeReview = (id: string) => api.patch(`/reviews/${id}/acknowledge`);
 export const getReviewSuggestions = (teacherId: string) =>
   api.get<{ suggestions: string[] }>(`/reviews/suggestions?teacher_id=${teacherId}`);
 

@@ -155,7 +155,7 @@ def get_dashboard():
 @app.get("/staff")
 def list_staff():
     return fetchall(
-        "SELECT id, name, email, role FROM users WHERE role = 'teacher' ORDER BY name"
+        "SELECT id, name, email, role, subjects, schedule FROM users WHERE role = 'teacher' ORDER BY name"
     )
 
 @app.get("/staff/{teacher_id}")
