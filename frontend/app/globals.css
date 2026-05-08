@@ -1,26 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --background: 0 0% 97%;
-    --foreground: 0 0% 10%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
-    --primary: 220 70% 25%;
-    --primary-foreground: 0 0% 100%;
-    --muted: 0 0% 94%;
-    --muted-foreground: 0 0% 45%;
-    --border: 0 0% 88%;
-    --radius: 0.5rem;
-  }
-
-  * {
-    border-color: hsl(var(--border));
-  }
-
-  body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-    font-family: "Georgia", serif;
-  }
+:root {
+  --bg: #F8F7F4;
+  --surface: #FFFFFF;
+  --navy: #0D1B2A;
+  --navy-mid: #1E3A5F;
+  --amber: #E8A020;
+  --border: #E2E0DB;
+  --border-strong: #C8C5BE;
+  --text: #0D1B2A;
+  --text-mid: #4A5568;
+  --text-muted: #9AA0A6;
+  --green: #2D7A4F;
+  --red: #C0392B;
+  --blue: #1A56DB;
 }
+
+* { box-sizing: border-box; }
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-family: 'DM Serif Display', serif; font-weight: 400; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up   { animation: fadeUp 0.35s ease forwards; }
+.fade-up-1 { animation: fadeUp 0.35s 0.05s ease forwards; opacity: 0; }
+.fade-up-2 { animation: fadeUp 0.35s 0.1s  ease forwards; opacity: 0; }
+.fade-up-3 { animation: fadeUp 0.35s 0.15s ease forwards; opacity: 0; }
+.fade-up-4 { animation: fadeUp 0.35s 0.2s  ease forwards; opacity: 0; }
+.fade-up-5 { animation: fadeUp 0.35s 0.25s ease forwards; opacity: 0; }

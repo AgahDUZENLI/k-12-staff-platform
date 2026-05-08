@@ -4,47 +4,68 @@ import { usePathname } from "next/navigation";
 
 const links = [
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/staff", label: "Staff" },
-  { href: "/observations/new", label: "New Observation" },
-  { href: "/reviews/new", label: "New Review" },
-  { href: "/goals", label: "Goals" },
+  { href: "/staff",     label: "Staff" },
+  { href: "/observations/new", label: "Observe" },
+  { href: "/reviews/new",      label: "Review" },
+  { href: "/goals",    label: "Goals" },
 ];
 
 export default function Sidebar() {
-  const pathname = usePathname();
+  const path = usePathname();
   return (
-    <aside className="fixed left-0 top-0 h-screen w-56 bg-[#0F2240] flex flex-col py-8 px-5 z-50">
-      <div className="mb-10">
-        <div className="text-white text-lg font-bold leading-tight">StaffSync</div>
-        <div className="text-[#7BA7E8] text-xs mt-1">K-12 Admin Platform</div>
+    <aside style={{
+      position: "fixed", top: 0, left: 0,
+      width: 220, height: "100vh",
+      background: "var(--navy)",
+      display: "flex", flexDirection: "column",
+      padding: "32px 0",
+      zIndex: 100,
+      borderRight: "1px solid rgba(255,255,255,0.06)",
+    }}>
+      {/* Amber top bar */}
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "var(--amber)" }} />
+
+      {/* Logo */}
+      <div style={{ padding: "0 28px", marginBottom: 40 }}>
+        <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 18, color: "#fff", letterSpacing: "-0.3px" }}>
+          DAKAS
+        </div>
+        <div style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", letterSpacing: "0.1em", textTransform: "uppercase", marginTop: 2 }}>
+          Westridge Academy
+        </div>
       </div>
 
-      <div className="mb-6">
-        <div className="text-[#7BA7E8] text-xs font-semibold uppercase tracking-widest mb-3">Menu</div>
-        <nav className="flex flex-col gap-1">
-          {links.map((link) => {
-            const active = pathname === link.href || pathname.startsWith(link.href + "/");
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-sm px-3 py-2 rounded transition-colors ${
-                  active
-                    ? "bg-white/10 text-white font-medium"
-                    : "text-[#A5C3FF] hover:text-white hover:bg-white/5"
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
+      {/* Nav */}
+      <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 2 }}>
+        <div style={{ fontSize: 10, color: "rgba(255,255,255,0.3)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 8, padding: "0 12px" }}>
+          Navigation
+        </div>
+        {links.map((l) => {
+          const active = path === l.href || (l.href !== "/dashboard" && path.startsWith(l.href));
+          return (
+            <Link key={l.href} href={l.href} style={{
+              display: "block",
+              padding: "9px 12px",
+              fontSize: 13,
+              fontWeight: active ? 500 : 400,
+              color: active ? "#fff" : "rgba(255,255,255,0.45)",
+              background: active ? "rgba(255,255,255,0.08)" : "transparent",
+              borderLeft: active ? "2px solid var(--amber)" : "2px solid transparent",
+              textDecoration: "none",
+              transition: "all 0.15s",
+              letterSpacing: "0.01em",
+            }}>
+              {l.label}
+            </Link>
+          );
+        })}
       </div>
 
-      <div className="mt-auto">
-        <div className="border border-white/10 rounded p-3">
-          <div className="text-white text-xs font-semibold">Sarah Mitchell</div>
-          <div className="text-[#7BA7E8] text-xs">Administrator</div>
+      {/* User */}
+      <div style={{ marginTop: "auto", padding: "0 28px" }}>
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 20 }}>
+          <div style={{ fontSize: 12, fontWeight: 500, color: "#fff" }}>Dr. Sarah Mitchell</div>
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginTop: 2 }}>Principal</div>
         </div>
       </div>
     </aside>
