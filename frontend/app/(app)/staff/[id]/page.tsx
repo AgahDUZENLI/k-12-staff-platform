@@ -191,9 +191,13 @@ export default function StaffProfilePage() {
     setSummaryLoading(true);
     try {
       const r = await getStaffSummary(id as string);
-      setSummary(r.data.summary);
+      if (r.data.summary) {
+        setSummary(r.data.summary);
+      } else {
+        setSummary("⚠ AI quota exhausted. Please try again tomorrow or add billing at aistudio.google.com.");
+      }
     } catch (e) {
-      setSummary("Unable to generate summary. Please check your AI configuration.");
+      setSummary("⚠ Unable to connect to AI service. Check that your backend is running.");
     }
     setSummaryLoading(false);
   };
@@ -258,7 +262,7 @@ export default function StaffProfilePage() {
           }}
         >
           <span style={{ color: "var(--amber)" }}>✦</span>
-          {summaryLoading ? "Generating..." : "AI Staff Summary"}
+          {summaryLoading ? "Generating..." : "Generate AI Summary"}
         </button>
       </div>
 

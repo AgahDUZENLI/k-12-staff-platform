@@ -35,7 +35,12 @@ export default function NewReviewPage() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
-  useEffect(() => { getStaff().then(r => setStaff(r.data)); }, []);
+  useEffect(() => {
+    getStaff().then(r => setStaff(r.data));
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get("teacher");
+    if (t && t !== "undefined") handleTeacherSelect(t);
+  }, []);
 
   const handleTeacherSelect = async (id: string) => {
     setTeacherId(id);

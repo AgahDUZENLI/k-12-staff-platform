@@ -58,7 +58,13 @@ export default function NewObservationPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
 
-  useEffect(() => { getStaff().then(r => setStaff(r.data)); }, []);
+  useEffect(() => {
+    getStaff().then(r => setStaff(r.data));
+    // Pre-select teacher from query param
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get("teacher");
+    if (t && t !== "undefined") setTeacherId(t);
+  }, []);
 
   const handleSubmit = async () => {
     if (!teacherId) return alert("Select a teacher.");

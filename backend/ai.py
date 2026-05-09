@@ -1,11 +1,11 @@
 import os
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-1.5-flash")
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+MODEL = "gemini-2.5-flash"
 
 SYSTEM_PROMPT = (
     "You are an expert K-12 instructional coach writing for school administrators. "
@@ -16,7 +16,10 @@ SYSTEM_PROMPT = (
 
 def ask(prompt: str) -> str:
     try:
-        response = model.generate_content(f"{SYSTEM_PROMPT}\n\n{prompt}")
+        response = client.models.generate_content(
+            model=MODEL,
+            contents=f"{SYSTEM_PROMPT}\n\n{prompt}",
+        )
         return response.text.strip()
     except Exception as e:
         print(f"Gemini error: {e}")
@@ -49,32 +52,33 @@ def observation_summary(scores: dict, notes: str, section_notes: dict = {}) -> t
 
 def staff_summary(teacher_name: str, observations: list, reviews: list, notes: list, goals: list) -> str:
     obs_text = "\n".join(
-        f"- {o.get('observed_at','')}: scores {o.get('scores',{})}, notes: {o.get('raw_notes','')}"
+        f"- {o.get('observed_at','')}: avg score {round(sum(o.get('scores',{}).values())/max(len(o.get('scores',{})),1),1)}/4, notes: {o.get('raw_notes','')[:200]}"
         for o in observations
     ) or "No observations recorded."
 
     rev_text = "\n".join(
-        f"- {r.get('period','')}: scores {r.get('category_scores',{})}, notes: {r.get('final_notes','')}"
+        f"- {r.get('period','')}: {r.get('final_notes','')[:300]}"
         for r in reviews
     ) or "No reviews recorded."
 
     notes_text = "\n".join(
-        f"- [{n.get('tag','')}] {n.get('content','')}"
-        for n in notes
+        f"- [{n.get('tag','')}] {n.get('content','')[:150]}"
+        for n in notes[:6]
     ) or "No notes recorded."
 
     goals_text = "\n".join(
-        f"- {g.get('title','')} (status: {g.get('status','')})"
+        f"- {g.get('title','')} ({g.get('status','')})"
         for g in goals
     ) or "No goals set."
 
     prompt = (
-        f"Write a concise professional summary paragraph for {teacher_name} based on:\n\n"
-        f"Observations:\n{obs_text}\n\n"
-        f"Performance Reviews:\n{rev_text}\n\n"
-        f"Staff Notes:\n{notes_text}\n\n"
-        f"Goals:\n{goals_text}\n\n"
-        "Summarize overall performance, growth trajectory, strengths, and areas for development in 3-4 sentences."
+        f"Write a professional 4-5 sentence staff report for {teacher_name} for a school principal. "
+        f"Cover: overall performance rating, instructional strengths, growth trajectory, and any areas for continued development. "
+        f"Be specific and reference actual data where possible.\n\n"
+        f"Observation data:\n{obs_text}\n\n"
+        f"Review notes:\n{rev_text}\n\n"
+        f"Admin notes:\n{notes_text}\n\n"
+        f"Goals:\n{goals_text}"
     )
     return ask(prompt)
 
@@ -91,7 +95,7 @@ def goal_recommendations(teacher_name: str, scores_list: list) -> list[str]:
 
     score_text = ", ".join(f"{k}: {v}/4" for k, v in avg_scores.items())
     prompt = (
-        f"{teacher_name}'s average domain scores this period: {score_text}.\n\n"
+        f"{teacher_name}'s average domain scores: {score_text}.\n\n"
         "Based on the lowest-scoring areas, suggest 2-3 specific, measurable improvement goals. "
         "Write each goal as a single sentence starting with an action verb. "
         "Separate each goal with a newline."
@@ -99,5 +103,4 @@ def goal_recommendations(teacher_name: str, scores_list: list) -> list[str]:
     text = ask(prompt)
     if not text:
         return []
-    goals = [g.strip("- ").strip() for g in text.split("\n") if g.strip()]
-    return goals[:3]
+    return [g.strip("- ").strip() for g in text.split("\n") if g.strip()][:3]
